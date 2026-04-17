@@ -80,7 +80,7 @@ A real Android port starter is now included in [android-app/README.md](android-a
 
 This is aimed at porting the existing RPCS3 core to Android through the NDK, not writing a brand new PS3 emulator from scratch. The current Termux path remains as the fastest working bootstrap while the direct port is being integrated.
 
-See the porting notes in [PORTING.md](PORTING.md).
+See the porting notes in [PORTING.md](PORTING.md) and the 0.1 readiness list in [RELEASE_0_1.md](RELEASE_0_1.md).
 
 ## Notes
 

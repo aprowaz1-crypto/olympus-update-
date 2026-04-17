@@ -13,8 +13,8 @@ import android.view.MotionEvent
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class MainActivity : AppCompatActivity() {
 
@@ -93,14 +93,17 @@ class MainActivity : AppCompatActivity() {
             updateStatus(state.message)
 
             if (showDialog && state.updateAvailable && state.latestVersion != null) {
-                AlertDialog.Builder(this)
+                MaterialAlertDialogBuilder(this)
                     .setTitle(getString(R.string.update_title))
                     .setMessage(getString(R.string.update_message, state.latestVersion))
                     .setPositiveButton(R.string.update_now) { _, _ ->
                         UpdateChecker.rememberVersion(this, state.latestVersion)
                         runInTermux("cd ~/olympus-update- && bash install.sh")
                     }
-                    .setNegativeButton(android.R.string.cancel, null)
+                    .setNeutralButton(R.string.view_release_checklist) { _, _ ->
+                        openUrl("https://github.com/aprowaz1-crypto/olympus-update-/blob/main/RELEASE_0_1.md")
+                    }
+                    .setNegativeButton(R.string.update_later, null)
                     .show()
             }
         }
