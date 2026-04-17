@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Olympus RPCS3 Port</string>
+    <string name="app_name">Helios3 RPCS3 Port</string>
     <string name="subtitle">Android NDK port starter for the existing RPCS3 core.</string>
     <string name="status_ready">Version 0.1 preview. This build proves the install, launch, update, and Android front-end flow while the native port layer continues to grow.</string>
     <string name="import_source">Import upstream RPCS3 source</string>

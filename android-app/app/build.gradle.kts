@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.olympus.launcher"
+    namespace = "com.helios3.launcher"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.olympus.launcher"
+        applicationId = "com.helios3.launcher"
         minSdk = 28
         targetSdk = 34
         versionCode = 3

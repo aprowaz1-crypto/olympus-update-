@@ -1,4 +1,4 @@
-# Olympus Native Update
+# Helios3 RPCS3 Port
 
 Native Termux-based launcher/installer for ARM64 RPCS3 on Android.
 
@@ -20,7 +20,7 @@ apt update && apt full-upgrade -y
 pkg install -y git
 ```
 
-Then install Olympus:
+Then install Helios3:
 
 ```bash
 git clone https://github.com/aprowaz1-crypto/olympus-update-.git
@@ -37,14 +37,14 @@ RPCS3_URL='https://your-direct-link/rpcs3-arm64.AppImage' bash install.sh
 If your Termux packages are already fixed manually and you only want to skip the pkg step:
 
 ```bash
-OLYMPUS_SKIP_PKG=1 bash install.sh
+HELIOS3_SKIP_PKG=1 bash install.sh
 ```
 
 ## Launch RPCS3
 
 ```bash
-olympus-start
-olympus-rpcs3
+helios3-start
+helios3-rpcs3
 ```
 
 ## Gamepad support
@@ -52,14 +52,14 @@ olympus-rpcs3
 Generate or refresh the controller profile:
 
 ```bash
-olympus-gamepad-fix
+helios3-gamepad-fix
 ```
 
 Check the environment, visible inputs, and update state:
 
 ```bash
-olympus-doctor
-olympus-check-updates
+helios3-doctor
+helios3-check-updates
 sdl2-jstest --list
 ```
 

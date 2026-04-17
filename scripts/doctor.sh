@@ -7,7 +7,7 @@ source "$SCRIPT_DIR/common.sh"
 
 ensure_dirs
 
-printf 'Olympus native doctor\n'
+printf 'Helios3 native doctor\n'
 printf '=====================\n'
 printf 'Arch: %s\n' "$(uname -m)"
 printf 'Prefix: %s\n' "$PREFIX"
@@ -28,8 +28,8 @@ else
   printf '\nNo /dev/input/event* nodes are visible to Termux right now.\n'
 fi
 
-if [ -f "$OLYMPUS_CONFIG_DIR/gamepad.env" ]; then
-  printf '\nGamepad config: %s\n' "$OLYMPUS_CONFIG_DIR/gamepad.env"
+if [ -f "$HELIOS3_CONFIG_DIR/gamepad.env" ]; then
+  printf '\nGamepad config: %s\n' "$HELIOS3_CONFIG_DIR/gamepad.env"
 else
-  printf '\nGamepad config has not been generated yet. Run olympus-gamepad-fix\n'
+  printf '\nGamepad config has not been generated yet. Run helios3-gamepad-fix\n'
 fi

@@ -7,7 +7,7 @@ source "$SCRIPT_DIR/common.sh"
 
 ensure_dirs
 
-installed_version="$(cat "$OLYMPUS_CONFIG_DIR/installed-version.txt" 2>/dev/null || true)"
+installed_version="$(cat "$HELIOS3_CONFIG_DIR/installed-version.txt" 2>/dev/null || true)"
 latest_url="$(pick_working_url 2>/dev/null || true)"
 latest_version="$(basename "$latest_url")"
 

@@ -1,4 +1,4 @@
-package com.olympus.launcher
+package com.helios3.launcher
 
 import android.content.Context
 import android.os.Handler
@@ -9,7 +9,7 @@ import java.net.URL
 import java.util.concurrent.Executors
 
 object UpdateChecker {
-    private const val PREFS_NAME = "olympus_updates"
+    private const val PREFS_NAME = "helios3_updates"
     private const val KEY_ACK_VERSION = "ack_version"
     private const val API_URL = "https://api.github.com/repos/RPCS3/rpcs3-binaries-linux-arm64/releases/latest"
     private const val HTML_URL = "https://github.com/RPCS3/rpcs3-binaries-linux-arm64/releases/latest"
@@ -106,7 +106,7 @@ object UpdateChecker {
             requestMethod = "GET"
             connectTimeout = 15000
             readTimeout = 15000
-            setRequestProperty("User-Agent", "Olympus-Android-Port")
+            setRequestProperty("User-Agent", "Helios3-Android-Port")
             setRequestProperty("Accept", "application/json,text/html")
         }
     }

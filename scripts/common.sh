@@ -10,9 +10,15 @@ if [ -z "${PREFIX:-}" ]; then
   fi
 fi
 
-OLYMPUS_HOME="${OLYMPUS_HOME:-$PREFIX/opt/olympus}"
-OLYMPUS_CONFIG_DIR="${OLYMPUS_CONFIG_DIR:-$HOME/.config/olympus}"
-OLYMPUS_CACHE_DIR="${OLYMPUS_CACHE_DIR:-$HOME/.cache/olympus}"
+HELIOS3_HOME="${HELIOS3_HOME:-${OLYMPUS_HOME:-$PREFIX/opt/helios3}}"
+HELIOS3_CONFIG_DIR="${HELIOS3_CONFIG_DIR:-${OLYMPUS_CONFIG_DIR:-$HOME/.config/helios3}}"
+HELIOS3_CACHE_DIR="${HELIOS3_CACHE_DIR:-${OLYMPUS_CACHE_DIR:-$HOME/.cache/helios3}}"
+
+# Backward-compatible aliases for older Olympus-based setups.
+OLYMPUS_HOME="$HELIOS3_HOME"
+OLYMPUS_CONFIG_DIR="$HELIOS3_CONFIG_DIR"
+OLYMPUS_CACHE_DIR="$HELIOS3_CACHE_DIR"
+OLYMPUS_USE_VIRGL="${HELIOS3_USE_VIRGL:-${OLYMPUS_USE_VIRGL:-0}}"
 
 log() {
   printf '[*] %s\n' "$*"
@@ -36,7 +42,7 @@ have_working_curl() {
 }
 
 ensure_dirs() {
-  mkdir -p "$OLYMPUS_HOME" "$OLYMPUS_CONFIG_DIR" "$OLYMPUS_CACHE_DIR"
+  mkdir -p "$HELIOS3_HOME" "$HELIOS3_CONFIG_DIR" "$HELIOS3_CACHE_DIR"
 }
 
 fetch_latest_asset_url() {
@@ -44,7 +50,7 @@ fetch_latest_asset_url() {
   python3 - <<'PY'
 import json, os, re, urllib.request
 repo = os.environ.get('RPCS3_BINARY_REPO', 'RPCS3/rpcs3-binaries-linux-arm64')
-headers = {'User-Agent': 'olympus-native-installer'}
+headers = {'User-Agent': 'helios3-native-installer'}
 
 try:
     api_url = f'https://api.github.com/repos/{repo}/releases/latest'
@@ -114,7 +120,7 @@ pick_working_url() {
       if python3 - "$url" <<'PY'
 import sys, urllib.request
 url = sys.argv[1]
-req = urllib.request.Request(url, method='HEAD', headers={'User-Agent': 'olympus'})
+req = urllib.request.Request(url, method='HEAD', headers={'User-Agent': 'helios3'})
 with urllib.request.urlopen(req, timeout=15) as r:
     code = getattr(r, 'status', 200)
 raise SystemExit(0 if 200 <= code < 400 else 1)
@@ -142,7 +148,7 @@ download_file() {
   python3 - "$url" "$out" <<'PY'
 import sys, urllib.request
 url, out = sys.argv[1], sys.argv[2]
-req = urllib.request.Request(url, headers={'User-Agent': 'olympus'})
+req = urllib.request.Request(url, headers={'User-Agent': 'helios3'})
 with urllib.request.urlopen(req, timeout=60) as r, open(out, 'wb') as f:
     while True:
         chunk = r.read(1024 * 1024)
@@ -156,25 +162,25 @@ record_installed_version() {
   local url="$1"
   local version
   version="$(basename "$url")"
-  printf '%s\n' "$url" > "$OLYMPUS_CONFIG_DIR/installed-url.txt"
-  printf '%s\n' "$version" > "$OLYMPUS_CONFIG_DIR/installed-version.txt"
+  printf '%s\n' "$url" > "$HELIOS3_CONFIG_DIR/installed-url.txt"
+  printf '%s\n' "$version" > "$HELIOS3_CONFIG_DIR/installed-version.txt"
 }
 
 extract_rpcs3() {
   local archive="$1"
-  rm -rf "$OLYMPUS_HOME/rpcs3" "$OLYMPUS_HOME/AppDir"
-  mkdir -p "$OLYMPUS_HOME/rpcs3"
+  rm -rf "$HELIOS3_HOME/rpcs3" "$HELIOS3_HOME/AppDir"
+  mkdir -p "$HELIOS3_HOME/rpcs3"
 
   case "$archive" in
     *.AppImage)
       chmod +x "$archive"
-      cp "$archive" "$OLYMPUS_HOME/rpcs3.AppImage"
+      cp "$archive" "$HELIOS3_HOME/rpcs3.AppImage"
       ;;
     *.tar.gz|*.tgz)
-      tar -xzf "$archive" -C "$OLYMPUS_HOME/rpcs3" --strip-components=1
+      tar -xzf "$archive" -C "$HELIOS3_HOME/rpcs3" --strip-components=1
       ;;
     *.zip)
-      unzip -o "$archive" -d "$OLYMPUS_HOME/rpcs3"
+      unzip -o "$archive" -d "$HELIOS3_HOME/rpcs3"
       ;;
     *)
       die "Unsupported package format: $archive"

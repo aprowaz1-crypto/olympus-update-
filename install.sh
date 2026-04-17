@@ -12,8 +12,8 @@ if [ "$(uname -m)" != "aarch64" ]; then
 fi
 
 install_termux_packages() {
-  if [ "${OLYMPUS_SKIP_PKG:-0}" = "1" ]; then
-    warn "Skipping pkg dependency installation because OLYMPUS_SKIP_PKG=1"
+  if [ "${HELIOS3_SKIP_PKG:-${OLYMPUS_SKIP_PKG:-0}}" = "1" ]; then
+    warn "Skipping pkg dependency installation because HELIOS3_SKIP_PKG=1"
     return 0
   fi
 
@@ -43,7 +43,7 @@ Then restart Termux and run:
   bash install.sh
 
 If you already fixed the dependencies manually and only want to continue this installer:
-  OLYMPUS_SKIP_PKG=1 bash install.sh
+  HELIOS3_SKIP_PKG=1 bash install.sh
 EOF
     exit 1
   fi
@@ -69,11 +69,17 @@ EOF
 
 install_launcher() {
   mkdir -p "$PREFIX/bin"
-  install -m 0755 "$SCRIPT_DIR/scripts/launch-rpcs3.sh" "$PREFIX/bin/olympus-rpcs3"
-  install -m 0755 "$SCRIPT_DIR/scripts/start-session.sh" "$PREFIX/bin/olympus-start"
-  install -m 0755 "$SCRIPT_DIR/scripts/enable-gamepad.sh" "$PREFIX/bin/olympus-gamepad-fix"
-  install -m 0755 "$SCRIPT_DIR/scripts/doctor.sh" "$PREFIX/bin/olympus-doctor"
-  install -m 0755 "$SCRIPT_DIR/scripts/check-updates.sh" "$PREFIX/bin/olympus-check-updates"
+  install -m 0755 "$SCRIPT_DIR/scripts/launch-rpcs3.sh" "$PREFIX/bin/helios3-rpcs3"
+  install -m 0755 "$SCRIPT_DIR/scripts/start-session.sh" "$PREFIX/bin/helios3-start"
+  install -m 0755 "$SCRIPT_DIR/scripts/enable-gamepad.sh" "$PREFIX/bin/helios3-gamepad-fix"
+  install -m 0755 "$SCRIPT_DIR/scripts/doctor.sh" "$PREFIX/bin/helios3-doctor"
+  install -m 0755 "$SCRIPT_DIR/scripts/check-updates.sh" "$PREFIX/bin/helios3-check-updates"
+
+  ln -sf "$PREFIX/bin/helios3-rpcs3" "$PREFIX/bin/olympus-rpcs3"
+  ln -sf "$PREFIX/bin/helios3-start" "$PREFIX/bin/olympus-start"
+  ln -sf "$PREFIX/bin/helios3-gamepad-fix" "$PREFIX/bin/olympus-gamepad-fix"
+  ln -sf "$PREFIX/bin/helios3-doctor" "$PREFIX/bin/olympus-doctor"
+  ln -sf "$PREFIX/bin/helios3-check-updates" "$PREFIX/bin/olympus-check-updates"
 }
 
 main() {
@@ -91,7 +97,7 @@ EOF
     exit 1
   fi
 
-  archive="$OLYMPUS_CACHE_DIR/$(basename "$url")"
+  archive="$HELIOS3_CACHE_DIR/$(basename "$url")"
   download_file "$url" "$archive"
   extract_rpcs3 "$archive"
   record_installed_version "$url"
@@ -99,12 +105,12 @@ EOF
 
   cat <<EOF
 
-✅ Olympus native update is installed.
+✅ Helios3 native update is installed.
 
 Run:
   termux-x11 :0 &
   am start --user 0 -n com.termux.x11/com.termux.x11.MainActivity
-  olympus-rpcs3
+  helios3-rpcs3
 
 EOF
 }

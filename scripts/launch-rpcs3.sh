@@ -17,11 +17,11 @@ export QT_QPA_PLATFORM="${QT_QPA_PLATFORM:-xcb}"
 export QT_XCB_GL_INTEGRATION="${QT_XCB_GL_INTEGRATION:-xcb_egl}"
 export SDL_JOYSTICK_HIDAPI="${SDL_JOYSTICK_HIDAPI:-0}"
 export SDL_GAMECONTROLLER_USE_BUTTON_LABELS="${SDL_GAMECONTROLLER_USE_BUTTON_LABELS:-0}"
-export SDL_GAMECONTROLLERCONFIG_FILE="$OLYMPUS_CONFIG_DIR/gamecontrollerdb.txt"
+export SDL_GAMECONTROLLERCONFIG_FILE="$HELIOS3_CONFIG_DIR/gamecontrollerdb.txt"
 
-if [ -f "$OLYMPUS_CONFIG_DIR/gamepad.env" ]; then
+if [ -f "$HELIOS3_CONFIG_DIR/gamepad.env" ]; then
   # shellcheck disable=SC1090
-  source "$OLYMPUS_CONFIG_DIR/gamepad.env"
+  source "$HELIOS3_CONFIG_DIR/gamepad.env"
 fi
 
 if command -v pulseaudio >/dev/null 2>&1; then
@@ -32,16 +32,16 @@ if command -v termux-wake-lock >/dev/null 2>&1; then
   termux-wake-lock >/dev/null 2>&1 || true
 fi
 
-if [ "${OLYMPUS_USE_VIRGL:-0}" = "1" ] && command -v virgl_test_server_android >/dev/null 2>&1; then
+if [ "${HELIOS3_USE_VIRGL:-${OLYMPUS_USE_VIRGL:-0}}" = "1" ] && command -v virgl_test_server_android >/dev/null 2>&1; then
   pgrep -f virgl_test_server_android >/dev/null 2>&1 || (
     virgl_test_server_android >/dev/null 2>&1 &
   )
 fi
 
-APPIMAGE="$OLYMPUS_HOME/rpcs3.AppImage"
+APPIMAGE="$HELIOS3_HOME/rpcs3.AppImage"
 BIN_CANDIDATES=(
-  "$OLYMPUS_HOME/rpcs3/bin/rpcs3"
-  "$OLYMPUS_HOME/rpcs3/rpcs3"
+  "$HELIOS3_HOME/rpcs3/bin/rpcs3"
+  "$HELIOS3_HOME/rpcs3/rpcs3"
 )
 
 if [ -x "$APPIMAGE" ]; then

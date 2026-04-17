@@ -1,11 +1,11 @@
-package com.olympus.launcher
+package com.helios3.launcher
 
 import android.view.Surface
 
 object NativeBridge {
     init {
         try {
-            System.loadLibrary("olympus_port")
+            System.loadLibrary("helios3_port")
         } catch (_: UnsatisfiedLinkError) {
         }
     }

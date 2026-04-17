@@ -14,5 +14,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "OlympusLauncher"
+rootProject.name = "Helios3Launcher"
 include(":app")

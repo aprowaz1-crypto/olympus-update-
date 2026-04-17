@@ -1,4 +1,4 @@
-package com.olympus.launcher
+package com.helios3.launcher
 
 import android.content.ActivityNotFoundException
 import android.content.ClipData
@@ -26,10 +26,10 @@ class MainActivity : AppCompatActivity() {
 
         bindCommand(R.id.syncSourceButton, "cd ~/olympus-update- && bash tools/import-rpcs3.sh")
         bindCommand(R.id.installButton, "cd ~/olympus-update- && bash install.sh")
-        bindCommand(R.id.startButton, "olympus-start")
-        bindCommand(R.id.launchButton, "olympus-rpcs3")
-        bindCommand(R.id.gamepadButton, "olympus-gamepad-fix")
-        bindCommand(R.id.doctorButton, "olympus-doctor")
+        bindCommand(R.id.startButton, "helios3-start")
+        bindCommand(R.id.launchButton, "helios3-rpcs3")
+        bindCommand(R.id.gamepadButton, "helios3-gamepad-fix")
+        bindCommand(R.id.doctorButton, "helios3-doctor")
 
         findViewById<Button>(R.id.repoButton).setOnClickListener {
             openUrl("https://github.com/aprowaz1-crypto/olympus-update-")
@@ -37,8 +37,8 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.checkUpdatesButton).setOnClickListener {
             refreshUpdateState(showDialog = true)
-            if (!runInTermux("olympus-check-updates")) {
-                copyToClipboard("olympus-check-updates")
+            if (!runInTermux("helios3-check-updates")) {
+                copyToClipboard("helios3-check-updates")
                 openTermux()
                 toast(getString(R.string.termux_fallback_toast))
             }
@@ -183,7 +183,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun copyToClipboard(text: String) {
         val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        clipboard.setPrimaryClip(ClipData.newPlainText("Olympus command", text))
+        clipboard.setPrimaryClip(ClipData.newPlainText("Helios3 command", text))
     }
 
     private fun toast(message: String) {

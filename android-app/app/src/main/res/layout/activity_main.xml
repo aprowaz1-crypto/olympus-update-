@@ -32,12 +32,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:background="@color/olympus_panel"
+            android:background="@color/helios3_panel"
             android:padding="12dp"
             android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
-            android:textColor="@color/olympus_text" />
+            android:textColor="@color/helios3_text" />
 
-        <com.olympus.launcher.NativeRenderView
+        <com.helios3.launcher.NativeRenderView
             android:id="@+id/renderView"
             android:layout_width="match_parent"
             android:layout_height="220dp"

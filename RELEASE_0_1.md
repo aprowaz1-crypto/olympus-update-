@@ -1,4 +1,4 @@
-# Olympus RPCS3 Port — 0.1 Readiness
+# Helios3 RPCS3 Port — 0.1 Readiness
 
 This file tracks what is needed for the first public 0.1 preview.
 
@@ -21,7 +21,7 @@ This file tracks what is needed for the first public 0.1 preview.
 
 ## Suggested 0.1 label
 
-Olympus RPCS3 Port 0.1 Preview
+Helios3 RPCS3 Port 0.1 Preview
 
 ## 0.1 focus
 

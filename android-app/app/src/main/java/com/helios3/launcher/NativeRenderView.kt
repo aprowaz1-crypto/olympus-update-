@@ -1,4 +1,4 @@
-package com.olympus.launcher
+package com.helios3.launcher
 
 import android.content.Context
 import android.util.AttributeSet

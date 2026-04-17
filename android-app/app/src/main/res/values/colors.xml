@@ -1,5 +1,5 @@
 <resources>
-    <color name="olympus_bg">#101318</color>
-    <color name="olympus_panel">#1B2230</color>
-    <color name="olympus_text">#EAF0FF</color>
+    <color name="helios3_bg">#101318</color>
+    <color name="helios3_panel">#1B2230</color>
+    <color name="helios3_text">#EAF0FF</color>
 </resources>

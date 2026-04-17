@@ -1,4 +1,4 @@
-# Olympus RPCS3 Android Port Starter
+# Helios3 RPCS3 Android Port Starter
 
 This folder now targets a real Android port direction for the existing RPCS3 project.
 
