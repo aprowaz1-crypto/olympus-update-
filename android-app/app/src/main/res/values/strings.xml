@@ -7,8 +7,13 @@
     <string name="start_session">Start X11 test session</string>
     <string name="launch_rpcs3">Launch current RPCS3 test</string>
     <string name="gamepad_fix">Apply gamepad profile</string>
+    <string name="check_updates">Check RPCS3 updates</string>
     <string name="doctor">Run diagnostics</string>
     <string name="open_repo">Open project page</string>
+    <string name="checking_updates">Checking for RPCS3 updates...</string>
+    <string name="update_title">RPCS3 update available</string>
+    <string name="update_message">A newer RPCS3 build was found: %1$s</string>
+    <string name="update_now">Update now</string>
     <string name="termux_fallback_toast">Termux service was not found. The command was copied to the clipboard.</string>
     <string name="termux_missing">Termux is not installed.</string>
     <string name="browser_missing">No browser is available.</string>

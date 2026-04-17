@@ -13,6 +13,7 @@ import android.view.MotionEvent
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
@@ -21,12 +22,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        findViewById<TextView>(R.id.statusText).text = listOf(
-            getString(R.string.status_ready),
-            "",
-            NativeBridge.getCoreStatusSafe(),
-            NativeBridge.getBuildInfoSafe()
-        ).joinToString("\n")
+        updateStatus(getString(R.string.checking_updates))
 
         bindCommand(R.id.syncSourceButton, "cd ~/olympus-update- && bash tools/import-rpcs3.sh")
         bindCommand(R.id.installButton, "cd ~/olympus-update- && bash install.sh")
@@ -38,6 +34,17 @@ class MainActivity : AppCompatActivity() {
         findViewById<Button>(R.id.repoButton).setOnClickListener {
             openUrl("https://github.com/aprowaz1-crypto/olympus-update-")
         }
+
+        findViewById<Button>(R.id.checkUpdatesButton).setOnClickListener {
+            refreshUpdateState(showDialog = true)
+            if (!runInTermux("olympus-check-updates")) {
+                copyToClipboard("olympus-check-updates")
+                openTermux()
+                toast(getString(R.string.termux_fallback_toast))
+            }
+        }
+
+        refreshUpdateState(showDialog = true)
     }
 
     override fun onGenericMotionEvent(event: MotionEvent): Boolean {
@@ -79,6 +86,35 @@ class MainActivity : AppCompatActivity() {
                 toast(getString(R.string.termux_fallback_toast))
             }
         }
+    }
+
+    private fun refreshUpdateState(showDialog: Boolean) {
+        UpdateChecker.checkForUpdates(this) { state ->
+            updateStatus(state.message)
+
+            if (showDialog && state.updateAvailable && state.latestVersion != null) {
+                AlertDialog.Builder(this)
+                    .setTitle(getString(R.string.update_title))
+                    .setMessage(getString(R.string.update_message, state.latestVersion))
+                    .setPositiveButton(R.string.update_now) { _, _ ->
+                        UpdateChecker.rememberVersion(this, state.latestVersion)
+                        runInTermux("cd ~/olympus-update- && bash install.sh")
+                    }
+                    .setNegativeButton(android.R.string.cancel, null)
+                    .show()
+            }
+        }
+    }
+
+    private fun updateStatus(updateLine: String) {
+        findViewById<TextView>(R.id.statusText).text = listOf(
+            getString(R.string.status_ready),
+            "",
+            NativeBridge.getCoreStatusSafe(),
+            NativeBridge.getBuildInfoSafe(),
+            "",
+            updateLine,
+        ).joinToString("\n")
     }
 
     private fun runInTermux(command: String): Boolean {

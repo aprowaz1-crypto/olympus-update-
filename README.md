@@ -55,10 +55,11 @@ Generate or refresh the controller profile:
 olympus-gamepad-fix
 ```
 
-Check the environment and visible inputs:
+Check the environment, visible inputs, and update state:
 
 ```bash
 olympus-doctor
+olympus-check-updates
 sdl2-jstest --list
 ```
 

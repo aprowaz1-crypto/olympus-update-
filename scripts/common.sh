@@ -152,6 +152,14 @@ with urllib.request.urlopen(req, timeout=60) as r, open(out, 'wb') as f:
 PY
 }
 
+record_installed_version() {
+  local url="$1"
+  local version
+  version="$(basename "$url")"
+  printf '%s\n' "$url" > "$OLYMPUS_CONFIG_DIR/installed-url.txt"
+  printf '%s\n' "$version" > "$OLYMPUS_CONFIG_DIR/installed-version.txt"
+}
+
 extract_rpcs3() {
   local archive="$1"
   rm -rf "$OLYMPUS_HOME/rpcs3" "$OLYMPUS_HOME/AppDir"

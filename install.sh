@@ -73,6 +73,7 @@ install_launcher() {
   install -m 0755 "$SCRIPT_DIR/scripts/start-session.sh" "$PREFIX/bin/olympus-start"
   install -m 0755 "$SCRIPT_DIR/scripts/enable-gamepad.sh" "$PREFIX/bin/olympus-gamepad-fix"
   install -m 0755 "$SCRIPT_DIR/scripts/doctor.sh" "$PREFIX/bin/olympus-doctor"
+  install -m 0755 "$SCRIPT_DIR/scripts/check-updates.sh" "$PREFIX/bin/olympus-check-updates"
 }
 
 main() {
@@ -93,6 +94,7 @@ EOF
   archive="$OLYMPUS_CACHE_DIR/$(basename "$url")"
   download_file "$url" "$archive"
   extract_rpcs3 "$archive"
+  record_installed_version "$url"
   "$SCRIPT_DIR/scripts/enable-gamepad.sh"
 
   cat <<EOF
