@@ -70,6 +70,9 @@ This will start the native Android preview path for the RPCS3 port.</string>
     <string name="action_cycle_ppu_decoder">Cycle PPU decoder</string>
     <string name="action_cycle_spu_decoder">Cycle SPU decoder</string>
     <string name="action_cycle_driver_profile">Cycle driver profile</string>
+    <string name="action_toggle_overlay">Toggle on-screen overlay</string>
+    <string name="action_toggle_haptics">Toggle gamepad haptics</string>
+    <string name="action_toggle_auto_updates">Toggle automatic update checks</string>
     <string name="import_driver">Import custom driver package</string>
     <string name="clear_driver">Clear custom driver</string>
     <string name="open_driver_help">Open driver help page</string>
