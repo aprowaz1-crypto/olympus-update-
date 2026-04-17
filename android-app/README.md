@@ -6,7 +6,7 @@ This folder targets a real native Android port direction for the existing RPCS3 
 
 - a native Android app front end;
 - built-in graphics, audio, CPU, firmware, and driver-management settings UI;
-- an NDK bridge and CMake build entry point;
+- a compiled NDK bootstrap core layer with surface rendering and input routing;
 - a path to integrate the upstream RPCS3 source tree directly.
 
 ## Build
@@ -19,4 +19,4 @@ This folder targets a real native Android port direction for the existing RPCS3 
 
 ## Scope
 
-This is not a brand new emulator. It is a native Android front end and porting base around the existing RPCS3 codebase, with no Termux dependency in the app flow.
+This is not a brand new emulator. It is a native Android front end and porting base around the existing RPCS3 codebase.

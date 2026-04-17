@@ -1,11 +1,18 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <style name="Theme.Helios3Launcher" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/helios3_primary</item>
+        <item name="colorOnPrimary">@color/helios3_button_text</item>
         <item name="colorPrimaryContainer">@color/helios3_primary_dark</item>
         <item name="colorSecondary">@color/helios3_secondary</item>
         <item name="colorSurface">@color/helios3_panel</item>
+        <item name="colorOnSurface">@color/helios3_text</item>
+        <item name="materialButtonStyle">@style/Widget.Helios3.Button</item>
         <item name="android:statusBarColor">@android:color/black</item>
         <item name="android:navigationBarColor">@android:color/black</item>
         <item name="android:windowLightStatusBar" tools:targetApi="23">false</item>
+    </style>
+
+    <style name="Widget.Helios3.Button" parent="Widget.Material3.Button">
+        <item name="android:textColor">@color/helios3_button_text</item>
     </style>
 </resources>

@@ -1,14 +1,8 @@
-#!/data/data/com.termux/files/usr/bin/bash
+#!/usr/bin/env bash
 set -euo pipefail
 
 : "${HOME:=$PWD}"
-if [ -z "${PREFIX:-}" ]; then
-  if [ -d /data/data/com.termux/files/usr ]; then
-    PREFIX=/data/data/com.termux/files/usr
-  else
-    PREFIX="$HOME/.local"
-  fi
-fi
+PREFIX="${HELIOS3_PREFIX:-${OLYMPUS_PREFIX:-$HOME/.local}}"
 
 HELIOS3_HOME="${HELIOS3_HOME:-${OLYMPUS_HOME:-$PREFIX/opt/helios3}}"
 HELIOS3_CONFIG_DIR="${HELIOS3_CONFIG_DIR:-${OLYMPUS_CONFIG_DIR:-$HOME/.config/helios3}}"

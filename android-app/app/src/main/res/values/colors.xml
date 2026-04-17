@@ -5,4 +5,5 @@
     <color name="helios3_primary">#5F8CFF</color>
     <color name="helios3_primary_dark">#355FD1</color>
     <color name="helios3_secondary">#7CC7FF</color>
+    <color name="helios3_button_text">#F8FBFF</color>
 </resources>

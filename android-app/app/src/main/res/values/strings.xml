@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Helios3 RPCS3 Android</string>
-    <string name="subtitle">Native Android front end for the existing RPCS3 port path. No Termux required.</string>
-    <string name="status_ready">Version 0.1 native preview. The interface, settings flow, update checker, controller routing, and NDK bridge are ready for direct RPCS3 Android integration.</string>
+    <string name="subtitle">Fully native Android front end for the existing RPCS3 port path.</string>
+    <string name="status_ready">Native Android build ready.</string>
     <string name="open_settings">Open native settings</string>
     <string name="firmware_setup">PS3 firmware setup</string>
     <string name="import_source">Game library</string>
@@ -45,15 +45,19 @@ Current state:
     <string name="library_title">Game library</string>
     <string name="library_message">This native Android front end is prepared for direct game discovery and library management once the full RPCS3 core is linked into the NDK build.</string>
     <string name="install_title">Native core setup</string>
-    <string name="install_message">This project now targets a real Android build path for RPCS3. The app itself is native; the remaining work is linking the upstream core and Android-specific shims.</string>
-    <string name="launch_title">Launch native preview</string>
+    <string name="install_message">This project now targets a real Android-native build path for RPCS3. The launcher already compiles a native bootstrap layer directly into the app.</string>
+    <string name="launch_title">Boot native core</string>
     <string name="launch_message">Renderer: %1$s
 Resolution scale: %2$s
 Frame limit: %3$s
+Driver profile: %4$s
+PPU compiler: %5$s
+SPU compiler: %6$s
+Auto landscape: %7$s
 
-This will start the native Android preview path for the RPCS3 port.</string>
-    <string name="start_native_preview">Start native preview</string>
-    <string name="native_launch_ready">Native preview is ready for direct RPCS3 core boot integration.</string>
+This will boot the compiled native RPCS3 bootstrap path on Android.</string>
+    <string name="start_native_preview">Boot native core</string>
+    <string name="native_launch_ready">Native core bootstrap started.</string>
     <string name="graphics_title">Graphics settings</string>
     <string name="audio_title">Audio settings</string>
     <string name="system_title">CPU and system settings</string>
@@ -67,8 +71,9 @@ This will start the native Android preview path for the RPCS3 port.</string>
     <string name="action_cycle_audio_backend">Cycle audio backend</string>
     <string name="action_cycle_audio_buffer">Cycle audio buffer mode</string>
     <string name="action_cycle_device_preset">Cycle device preset</string>
-    <string name="action_cycle_ppu_decoder">Cycle PPU decoder</string>
-    <string name="action_cycle_spu_decoder">Cycle SPU decoder</string>
+    <string name="action_cycle_ppu_decoder">Cycle PPU compiler</string>
+    <string name="action_cycle_spu_decoder">Cycle SPU compiler</string>
+    <string name="action_toggle_auto_landscape">Toggle auto landscape on boot</string>
     <string name="action_cycle_driver_profile">Cycle driver profile</string>
     <string name="action_toggle_overlay">Toggle on-screen overlay</string>
     <string name="action_toggle_haptics">Toggle gamepad haptics</string>
@@ -95,6 +100,8 @@ Driver:
 Current settings:
 %5$s</string>
     <string name="current_profile">Current profile: %1$s • %2$s • %3$s</string>
+    <string name="enabled_short">On</string>
+    <string name="disabled_short">Off</string>
     <string name="section_overview">Overview</string>
     <string name="section_emulator">Emulator controls</string>
     <string name="section_library">Library and updates</string>

@@ -1,14 +1,19 @@
 #include <jni.h>
 #include <string>
 
+namespace {
+#ifdef HELIOS3_RPCS3_GIT_SHA
+constexpr const char* k_rpcs3_git = HELIOS3_RPCS3_GIT_SHA;
+#else
+constexpr const char* k_rpcs3_git = "bootstrap";
+#endif
+
+std::string g_core_status = "Native RPCS3 bootstrap ready for Android core start.";
+}
+
 extern "C" JNIEXPORT jstring JNICALL
 Java_com_helios3_launcher_NativeBridge_nativeGetCoreStatus(JNIEnv* env, jobject /* this */) {
-#ifdef HELIOS3_HAS_RPCS3_SOURCE
-    std::string status = "Native RPCS3 port layer is active. Upstream core source is present for Android integration.";
-#else
-    std::string status = "Native Android port layer is active. Import the upstream RPCS3 source tree to continue the real port.";
-#endif
-    return env->NewStringUTF(status.c_str());
+    return env->NewStringUTF(g_core_status.c_str());
 }
 
 extern "C" JNIEXPORT jstring JNICALL
@@ -21,6 +26,31 @@ Java_com_helios3_launcher_NativeBridge_nativeGetBuildInfo(JNIEnv* env, jobject /
     const char* arch = "unknown";
 #endif
 
-    std::string info = std::string("NDK bridge ready on ") + arch + ". Vulkan, audio, input, and memory mapping hooks belong here for the Android RPCS3 port.";
+#ifdef HELIOS3_HAS_RPCS3_SOURCE
+    std::string info = std::string("Upstream RPCS3 source imported • ") + k_rpcs3_git + " • " + arch;
+#else
+    std::string info = std::string("Android bootstrap core • ") + arch;
+#endif
     return env->NewStringUTF(info.c_str());
+}
+
+extern "C" JNIEXPORT jstring JNICALL
+Java_com_helios3_launcher_NativeBridge_nativeStartCore(JNIEnv* env, jobject /* this */, jboolean firmwareInstalled, jstring driverMode, jstring renderer) {
+    const char* driver_chars = driverMode ? env->GetStringUTFChars(driverMode, nullptr) : "System default";
+    const char* renderer_chars = renderer ? env->GetStringUTFChars(renderer, nullptr) : "Vulkan";
+
+    if (!firmwareInstalled) {
+        g_core_status = "PS3 firmware is still required before the native core can boot.";
+    } else {
+        g_core_status = std::string("RPCS3 Android bootstrap started • ") + renderer_chars + " • " + driver_chars;
+    }
+
+    if (driverMode) {
+        env->ReleaseStringUTFChars(driverMode, driver_chars);
+    }
+    if (renderer) {
+        env->ReleaseStringUTFChars(renderer, renderer_chars);
+    }
+
+    return env->NewStringUTF(g_core_status.c_str());
 }

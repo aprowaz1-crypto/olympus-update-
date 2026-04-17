@@ -1,6 +1,9 @@
 .cache/
 *.log
 *.tmp
+.vscode/
+third_party/
+Screenrecorder*.mp4
 android-app/.gradle/
 android-app/**/build/
 android-app/local.properties

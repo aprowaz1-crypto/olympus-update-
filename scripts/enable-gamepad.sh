@@ -1,14 +1,13 @@
-#!/data/data/com.termux/files/usr/bin/bash
+#!/usr/bin/env bash
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-# shellcheck source=scripts/common.sh
 source "$SCRIPT_DIR/common.sh"
 
 ensure_dirs
 
 cat > "$HELIOS3_CONFIG_DIR/gamepad.env" <<'EOF'
-# Helios3 native gamepad tuning for Termux:X11
+# Helios3 native gamepad tuning
 export SDL_JOYSTICK_HIDAPI=0
 export SDL_GAMECONTROLLER_USE_BUTTON_LABELS=0
 # Add custom mappings below if one of your pads is not detected correctly.
@@ -23,4 +22,4 @@ cat > "$HELIOS3_CONFIG_DIR/gamecontrollerdb.txt" <<'EOF'
 EOF
 
 log "Gamepad profile written to $HELIOS3_CONFIG_DIR"
-log "If detection still fails, pair the controller before launching Termux:X11 and test with: sdl2-jstest --list"
+log "If detection still fails, pair the controller before launching the app and test the mapping again."

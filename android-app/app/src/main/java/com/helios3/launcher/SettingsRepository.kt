@@ -13,6 +13,7 @@ data class LauncherSettings(
     val devicePreset: String,
     val shaderCache: Boolean,
     val vSync: Boolean,
+    val autoLandscape: Boolean,
     val overlay: Boolean,
     val haptics: Boolean,
     val autoCheckUpdates: Boolean,
@@ -24,9 +25,10 @@ data class LauncherSettings(
         "Frame limit: $frameLimit",
         "Audio backend: $audioBackend",
         "Audio buffer: $audioBuffer",
-        "PPU decoder: $ppuDecoder",
-        "SPU decoder: $spuDecoder",
+        "PPU compiler: $ppuDecoder",
+        "SPU compiler: $spuDecoder",
         "VSync: ${if (vSync) "On" else "Off"}",
+        "Auto landscape: ${if (autoLandscape) "On" else "Off"}",
         "Shader cache: ${if (shaderCache) "On" else "Off"}",
         "Overlay controls: ${if (overlay) "On" else "Off"}",
         "Gamepad haptics: ${if (haptics) "On" else "Off"}",
@@ -46,6 +48,7 @@ object SettingsRepository {
     private const val KEY_DEVICE_PRESET = "device_preset"
     private const val KEY_SHADER_CACHE = "shader_cache"
     private const val KEY_VSYNC = "vsync"
+    private const val KEY_AUTO_LANDSCAPE = "auto_landscape"
     private const val KEY_OVERLAY = "overlay"
     private const val KEY_HAPTICS = "haptics"
     private const val KEY_AUTO_UPDATES = "auto_updates"
@@ -55,8 +58,8 @@ object SettingsRepository {
     private val frameLimits = listOf("Auto", "30 FPS", "60 FPS", "120 FPS", "Unlocked")
     private val audioBackends = listOf("AAudio", "OpenSL ES", "Cubeb")
     private val audioBuffers = listOf("Low latency", "Balanced", "Very safe")
-    private val ppuDecoders = listOf("LLVM", "Fast interpreter", "Interpreter")
-    private val spuDecoders = listOf("LLVM", "ASMJIT", "Safe interpreter")
+    private val ppuDecoders = listOf("LLVM recompiler", "Fast interpreter", "Interpreter")
+    private val spuDecoders = listOf("LLVM recompiler", "ASMJIT recompiler", "Safe interpreter")
     private val devicePresets = listOf("Balanced", "High compatibility", "Battery saver", "High performance")
 
     fun load(context: Context): LauncherSettings {
@@ -72,6 +75,7 @@ object SettingsRepository {
             devicePreset = prefs.getString(KEY_DEVICE_PRESET, devicePresets.first()) ?: devicePresets.first(),
             shaderCache = prefs.getBoolean(KEY_SHADER_CACHE, true),
             vSync = prefs.getBoolean(KEY_VSYNC, true),
+            autoLandscape = prefs.getBoolean(KEY_AUTO_LANDSCAPE, true),
             overlay = prefs.getBoolean(KEY_OVERLAY, false),
             haptics = prefs.getBoolean(KEY_HAPTICS, true),
             autoCheckUpdates = prefs.getBoolean(KEY_AUTO_UPDATES, true),
@@ -91,6 +95,7 @@ object SettingsRepository {
             .putString(KEY_DEVICE_PRESET, settings.devicePreset)
             .putBoolean(KEY_SHADER_CACHE, settings.shaderCache)
             .putBoolean(KEY_VSYNC, settings.vSync)
+            .putBoolean(KEY_AUTO_LANDSCAPE, settings.autoLandscape)
             .putBoolean(KEY_OVERLAY, settings.overlay)
             .putBoolean(KEY_HAPTICS, settings.haptics)
             .putBoolean(KEY_AUTO_UPDATES, settings.autoCheckUpdates)
@@ -104,11 +109,12 @@ object SettingsRepository {
             frameLimit = "Auto",
             audioBackend = "AAudio",
             audioBuffer = "Low latency",
-            ppuDecoder = "LLVM",
-            spuDecoder = "LLVM",
+            ppuDecoder = "LLVM recompiler",
+            spuDecoder = "LLVM recompiler",
             devicePreset = "Balanced",
             shaderCache = true,
             vSync = true,
+            autoLandscape = true,
             overlay = false,
             haptics = true,
             autoCheckUpdates = true,
@@ -153,6 +159,10 @@ object SettingsRepository {
 
     fun toggleVSync(context: Context): LauncherSettings = load(context)
         .copy(vSync = !load(context).vSync)
+        .also { save(context, it) }
+
+    fun toggleAutoLandscape(context: Context): LauncherSettings = load(context)
+        .copy(autoLandscape = !load(context).autoLandscape)
         .also { save(context, it) }
 
     fun toggleOverlay(context: Context): LauncherSettings = load(context)

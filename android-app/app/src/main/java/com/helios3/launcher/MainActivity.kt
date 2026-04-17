@@ -2,6 +2,7 @@ package com.helios3.launcher
 
 import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.net.Uri
 import android.os.Bundle
 import android.view.InputDevice
@@ -12,6 +13,9 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class MainActivity : AppCompatActivity() {
@@ -58,6 +62,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        exitGameMode()
 
         lastUpdateLine = getString(R.string.checking_updates)
         updateStatus(lastUpdateLine)
@@ -217,6 +222,7 @@ class MainActivity : AppCompatActivity() {
     private fun showLaunchDialog() {
         val settings = SettingsRepository.load(this)
         val firmware = FirmwareRepository.load(this)
+        val driver = DriverRepository.load(this)
         MaterialAlertDialogBuilder(this)
             .setTitle(R.string.launch_title)
             .setMessage(
@@ -225,6 +231,10 @@ class MainActivity : AppCompatActivity() {
                     settings.renderer,
                     settings.resolutionScale,
                     settings.frameLimit,
+                    driver.mode,
+                    settings.ppuDecoder,
+                    settings.spuDecoder,
+                    if (settings.autoLandscape) getString(R.string.enabled_short) else getString(R.string.disabled_short),
                 ),
             )
             .setPositiveButton(R.string.start_native_preview) { _, _ ->
@@ -233,9 +243,14 @@ class MainActivity : AppCompatActivity() {
                     showFirmwareDialog()
                     return@setPositiveButton
                 }
-                lastUpdateLine = getString(R.string.native_launch_ready)
+                enterGameMode(settings.autoLandscape)
+                lastUpdateLine = NativeBridge.startCoreSafe(
+                    firmwareInstalled = firmware.installed,
+                    driverMode = driver.mode,
+                    renderer = settings.renderer,
+                )
                 updateStatus(lastUpdateLine)
-                toast(getString(R.string.native_launch_ready))
+                toast(lastUpdateLine)
             }
             .setNegativeButton(android.R.string.cancel, null)
             .show()
@@ -290,6 +305,7 @@ class MainActivity : AppCompatActivity() {
             getString(R.string.action_cycle_device_preset),
             getString(R.string.action_cycle_ppu_decoder),
             getString(R.string.action_cycle_spu_decoder),
+            getString(R.string.action_toggle_auto_landscape),
         )
 
         MaterialAlertDialogBuilder(this)
@@ -298,7 +314,8 @@ class MainActivity : AppCompatActivity() {
                 when (which) {
                     0 -> SettingsRepository.cycleDevicePreset(this)
                     1 -> SettingsRepository.cyclePpuDecoder(this)
-                    else -> SettingsRepository.cycleSpuDecoder(this)
+                    2 -> SettingsRepository.cycleSpuDecoder(this)
+                    else -> SettingsRepository.toggleAutoLandscape(this)
                 }
                 updateStatus(lastUpdateLine)
                 toast(getString(R.string.settings_saved))
@@ -406,20 +423,16 @@ class MainActivity : AppCompatActivity() {
         val driver = DriverRepository.load(this)
         findViewById<TextView>(R.id.statusText).text = listOf(
             getString(R.string.status_ready),
-            "",
             NativeBridge.getCoreStatusSafe(),
             NativeBridge.getBuildInfoSafe(),
             firmware.summaryLine(),
             driver.summaryLine(),
-            "",
             getString(
                 R.string.current_profile,
                 settings.renderer,
                 settings.resolutionScale,
                 settings.frameLimit,
             ),
-            settings.summaryLines().joinToString("\n"),
-            "",
             updateLine,
         ).joinToString("\n")
     }
@@ -449,6 +462,26 @@ class MainActivity : AppCompatActivity() {
             if (event.isButtonPressed(MotionEvent.BUTTON_TERTIARY)) 1 else 0,
             if (event.isButtonPressed(MotionEvent.BUTTON_BACK)) 1 else 0,
         )
+    }
+
+    private fun enterGameMode(autoLandscape: Boolean) {
+        requestedOrientation = if (autoLandscape) {
+            ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+        } else {
+            ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        }
+
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        WindowInsetsControllerCompat(window, window.decorView).apply {
+            hide(WindowInsetsCompat.Type.systemBars())
+            systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        }
+    }
+
+    private fun exitGameMode() {
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        WindowCompat.setDecorFitsSystemWindows(window, true)
+        WindowInsetsControllerCompat(window, window.decorView).show(WindowInsetsCompat.Type.systemBars())
     }
 
     private fun openUrl(url: String) {
