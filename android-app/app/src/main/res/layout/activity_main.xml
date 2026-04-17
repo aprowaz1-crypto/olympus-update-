@@ -32,10 +32,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:background="#1F1F1F"
+            android:background="@color/olympus_panel"
             android:padding="12dp"
             android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
-            android:textColor="#FFFFFF" />
+            android:textColor="@color/olympus_text" />
+
+        <com.olympus.launcher.NativeRenderView
+            android:id="@+id/renderView"
+            android:layout_width="match_parent"
+            android:layout_height="220dp"
+            android:layout_marginTop="14dp"
+            android:background="#000000" />
 
         <Button
             android:id="@+id/syncSourceButton"

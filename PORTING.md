@@ -17,3 +17,10 @@ Reuse the existing RPCS3 core and adapt it for Android by:
 2. Add Android-specific build patches without forking the entire architecture.
 3. Replace or shim desktop assumptions around windows, files, input, and memory mapping.
 4. Bring up the app with a minimal native boot path before tackling full game compatibility.
+
+## Current progress
+
+- NDK build entry point is live.
+- Native Android surface attachment is wired in.
+- Gamepad events are being forwarded into the native layer.
+- Overlay and import scripts are prepared for upstream RPCS3 integration.

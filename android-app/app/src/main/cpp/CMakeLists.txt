@@ -8,6 +8,7 @@ set(RPCS3_SRC_DIR "${CMAKE_SOURCE_DIR}/../../../../third_party/rpcs3")
 
 add_library(olympus_port SHARED
     native-lib.cpp
+    android_runtime.cpp
 )
 
 if(EXISTS "${RPCS3_SRC_DIR}")
@@ -15,7 +16,9 @@ if(EXISTS "${RPCS3_SRC_DIR}")
 endif()
 
 find_library(log-lib log)
+find_library(android-lib android)
 
 target_link_libraries(olympus_port
     ${log-lib}
+    ${android-lib}
 )

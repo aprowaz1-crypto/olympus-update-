@@ -7,6 +7,9 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.InputDevice
+import android.view.KeyEvent
+import android.view.MotionEvent
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
@@ -37,6 +40,37 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onGenericMotionEvent(event: MotionEvent): Boolean {
+        if (isGamepadSource(event.source)) {
+            NativeBridge.onGamepadState(
+                axes = floatArrayOf(
+                    event.getAxisValue(MotionEvent.AXIS_X),
+                    event.getAxisValue(MotionEvent.AXIS_Y),
+                    event.getAxisValue(MotionEvent.AXIS_Z),
+                    event.getAxisValue(MotionEvent.AXIS_RZ),
+                    event.getAxisValue(MotionEvent.AXIS_LTRIGGER),
+                    event.getAxisValue(MotionEvent.AXIS_RTRIGGER),
+                ),
+                buttons = collectButtons(event),
+            )
+        }
+        return super.onGenericMotionEvent(event)
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
+        if (isGamepadSource(event.source)) {
+            NativeBridge.onGamepadState(FloatArray(6), collectButtons(event))
+        }
+        return super.onKeyDown(keyCode, event)
+    }
+
+    override fun onKeyUp(keyCode: Int, event: KeyEvent): Boolean {
+        if (isGamepadSource(event.source)) {
+            NativeBridge.onGamepadState(FloatArray(6), collectButtons(event))
+        }
+        return super.onKeyUp(keyCode, event)
+    }
+
     private fun bindCommand(buttonId: Int, command: String) {
         findViewById<Button>(buttonId).setOnClickListener {
             if (!runInTermux(command)) {
@@ -62,6 +96,33 @@ class MainActivity : AppCompatActivity() {
         } catch (_: Exception) {
             false
         }
+    }
+
+    private fun isGamepadSource(source: Int): Boolean {
+        return source and InputDevice.SOURCE_GAMEPAD == InputDevice.SOURCE_GAMEPAD ||
+            source and InputDevice.SOURCE_JOYSTICK == InputDevice.SOURCE_JOYSTICK
+    }
+
+    private fun collectButtons(event: KeyEvent): IntArray {
+        fun pressed(code: Int): Int {
+            return if (event.keyCode == code && event.action == KeyEvent.ACTION_DOWN) 1 else 0
+        }
+
+        return intArrayOf(
+            pressed(KeyEvent.KEYCODE_BUTTON_A),
+            pressed(KeyEvent.KEYCODE_BUTTON_B),
+            pressed(KeyEvent.KEYCODE_BUTTON_X),
+            pressed(KeyEvent.KEYCODE_BUTTON_Y),
+        )
+    }
+
+    private fun collectButtons(event: MotionEvent): IntArray {
+        return intArrayOf(
+            if (event.isButtonPressed(MotionEvent.BUTTON_PRIMARY)) 1 else 0,
+            if (event.isButtonPressed(MotionEvent.BUTTON_SECONDARY)) 1 else 0,
+            if (event.isButtonPressed(MotionEvent.BUTTON_TERTIARY)) 1 else 0,
+            if (event.isButtonPressed(MotionEvent.BUTTON_BACK)) 1 else 0,
+        )
     }
 
     private fun openTermux() {
