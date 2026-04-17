@@ -1,10 +1,11 @@
 <resources>
-    <string name="app_name">Olympus Launcher</string>
-    <string name="subtitle">Native Android front end for the Olympus Termux RPCS3 stack.</string>
-    <string name="status_ready">This app sends launch commands to Termux. Install Termux and the Olympus core first.</string>
-    <string name="install_core">Install or update core</string>
-    <string name="start_session">Start Termux:X11 session</string>
-    <string name="launch_rpcs3">Launch RPCS3</string>
+    <string name="app_name">Olympus RPCS3 Port</string>
+    <string name="subtitle">Android NDK port starter for the existing RPCS3 core.</string>
+    <string name="status_ready">This project targets a real Android port of RPCS3. The UI below helps bootstrap the current core while the native NDK layer grows.</string>
+    <string name="import_source">Import upstream RPCS3 source</string>
+    <string name="install_core">Bootstrap current core</string>
+    <string name="start_session">Start X11 test session</string>
+    <string name="launch_rpcs3">Launch current RPCS3 test</string>
     <string name="gamepad_fix">Apply gamepad profile</string>
     <string name="doctor">Run diagnostics</string>
     <string name="open_repo">Open project page</string>

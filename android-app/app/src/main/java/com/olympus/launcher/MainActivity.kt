@@ -18,10 +18,15 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        findViewById<TextView>(R.id.statusText).text =
-            getString(R.string.status_ready)
+        findViewById<TextView>(R.id.statusText).text = listOf(
+            getString(R.string.status_ready),
+            "",
+            NativeBridge.getCoreStatusSafe(),
+            NativeBridge.getBuildInfoSafe()
+        ).joinToString("\n")
 
-        bindCommand(R.id.installButton, "bash ~/olympus-update-/install.sh")
+        bindCommand(R.id.syncSourceButton, "cd ~/olympus-update- && bash tools/import-rpcs3.sh")
+        bindCommand(R.id.installButton, "cd ~/olympus-update- && bash install.sh")
         bindCommand(R.id.startButton, "olympus-start")
         bindCommand(R.id.launchButton, "olympus-rpcs3")
         bindCommand(R.id.gamepadButton, "olympus-gamepad-fix")

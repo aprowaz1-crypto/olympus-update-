@@ -73,11 +73,13 @@ apt update && apt full-upgrade -y
 
 After that, fully close and reopen Termux, then rerun the installer.
 
-## Android app wrapper
+## Android port direction
 
-A native Android launcher UI is now included in [android-app/README.md](android-app/README.md).
+A real Android port starter is now included in [android-app/README.md](android-app/README.md).
 
-It does not move emulation into Java or a fake Linux layer. Instead, it gives you a proper app front end while keeping the heavy work on the native ARM64 Termux side.
+This is aimed at porting the existing RPCS3 core to Android through the NDK, not writing a brand new PS3 emulator from scratch. The current Termux path remains as the fastest working bootstrap while the direct port is being integrated.
+
+See the porting notes in [PORTING.md](PORTING.md).
 
 ## Notes
 

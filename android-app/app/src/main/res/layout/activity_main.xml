@@ -38,10 +38,17 @@
             android:textColor="#FFFFFF" />
 
         <Button
-            android:id="@+id/installButton"
+            android:id="@+id/syncSourceButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
+            android:text="@string/import_source" />
+
+        <Button
+            android:id="@+id/installButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:text="@string/install_core" />
 
         <Button
