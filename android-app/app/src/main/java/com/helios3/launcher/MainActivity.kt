@@ -3,32 +3,36 @@ package com.helios3.launcher
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.pm.ActivityInfo
+import android.content.res.ColorStateList
+import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
 import android.view.InputDevice
 import android.view.KeyEvent
 import android.view.MotionEvent
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import com.google.android.material.card.MaterialCardView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class MainActivity : AppCompatActivity() {
     private var lastUpdateLine: String = ""
+    private var pendingCoverForGameUri: String? = null
 
     private val firmwarePicker = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri != null) {
-            runCatching {
-                contentResolver.takePersistableUriPermission(
-                    uri,
-                    Intent.FLAG_GRANT_READ_URI_PERMISSION,
-                )
-            }
+            persistReadPermission(uri)
             FirmwareRepository.rememberPickedFirmware(this, uri)
             val firmware = FirmwareRepository.load(this)
             lastUpdateLine = getString(
@@ -42,12 +46,7 @@ class MainActivity : AppCompatActivity() {
 
     private val driverPicker = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri != null) {
-            runCatching {
-                contentResolver.takePersistableUriPermission(
-                    uri,
-                    Intent.FLAG_GRANT_READ_URI_PERMISSION,
-                )
-            }
+            persistReadPermission(uri)
             DriverRepository.rememberCustomDriver(this, uri)
             val driver = DriverRepository.load(this)
             lastUpdateLine = getString(
@@ -59,12 +58,38 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private val gamePicker = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        if (uri != null) {
+            persistReadPermission(uri)
+            val game = GameLibraryRepository.addGame(this, uri)
+            lastUpdateLine = getString(R.string.game_added, game.title)
+            refreshLibrary()
+            updateStatus(lastUpdateLine)
+            toast(lastUpdateLine)
+        }
+    }
+
+    private val coverPicker = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        val selectedGameUri = pendingCoverForGameUri
+        pendingCoverForGameUri = null
+
+        if (uri != null && selectedGameUri != null) {
+            persistReadPermission(uri)
+            GameLibraryRepository.attachCover(this, selectedGameUri, uri)
+            lastUpdateLine = getString(R.string.cover_updated)
+            refreshLibrary()
+            updateStatus(lastUpdateLine)
+            toast(lastUpdateLine)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         exitGameMode()
 
         lastUpdateLine = getString(R.string.checking_updates)
+        refreshLibrary()
         updateStatus(lastUpdateLine)
 
         findViewById<Button>(R.id.settingsButton).setOnClickListener {
@@ -77,7 +102,7 @@ class MainActivity : AppCompatActivity() {
             showDriverDialog()
         }
         findViewById<Button>(R.id.syncSourceButton).setOnClickListener {
-            showLibraryDialog()
+            gamePicker.launch(arrayOf("*/*"))
         }
         findViewById<Button>(R.id.installButton).setOnClickListener {
             showInstallDialog()
@@ -105,6 +130,9 @@ class MainActivity : AppCompatActivity() {
         }
         findViewById<Button>(R.id.checkUpdatesButton).setOnClickListener {
             refreshUpdateState(showDialog = true)
+        }
+        findViewById<ImageView>(R.id.gameCoverImage).setOnClickListener {
+            chooseCoverForSelectedGame()
         }
 
         val settings = SettingsRepository.load(this)
@@ -177,12 +205,7 @@ class MainActivity : AppCompatActivity() {
         val firmware = FirmwareRepository.load(this)
         MaterialAlertDialogBuilder(this)
             .setTitle(R.string.firmware_title)
-            .setMessage(
-                getString(
-                    R.string.firmware_message,
-                    firmware.summaryLine(),
-                ),
-            )
+            .setMessage(getString(R.string.firmware_message, firmware.summaryLine()))
             .setPositiveButton(R.string.import_firmware) { _, _ ->
                 firmwarePicker.launch(arrayOf("*/*"))
             }
@@ -198,12 +221,28 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showLibraryDialog() {
+        val selectedGame = GameLibraryRepository.selected(this)
+        val count = GameLibraryRepository.load(this).size
+
         MaterialAlertDialogBuilder(this)
             .setTitle(R.string.library_title)
-            .setMessage(R.string.library_message)
-            .setPositiveButton(android.R.string.ok, null)
-            .setNeutralButton(R.string.view_release_checklist) { _, _ ->
-                openUrl("https://github.com/aprowaz1-crypto/olympus-update-/blob/main/RELEASE_0_1.md")
+            .setMessage(
+                listOf(
+                    getString(R.string.library_message),
+                    getString(R.string.library_count, count),
+                    selectedGame?.let { getString(R.string.selected_game_status, it.title) } ?: getString(R.string.no_game_selected),
+                ).joinToString("\n\n"),
+            )
+            .setPositiveButton(R.string.import_source) { _, _ ->
+                gamePicker.launch(arrayOf("*/*"))
+            }
+            .setNeutralButton(R.string.set_cover_art) { _, _ ->
+                chooseCoverForSelectedGame()
+            }
+            .setNegativeButton(R.string.clear_library) { _, _ ->
+                GameLibraryRepository.clear(this)
+                refreshLibrary()
+                updateStatus(lastUpdateLine)
             }
             .show()
     }
@@ -215,11 +254,21 @@ class MainActivity : AppCompatActivity() {
             .setPositiveButton(R.string.view_release_checklist) { _, _ ->
                 openUrl("https://github.com/aprowaz1-crypto/olympus-update-/blob/main/PORTING.md")
             }
+            .setNeutralButton(R.string.import_driver) { _, _ ->
+                driverPicker.launch(arrayOf("*/*"))
+            }
             .setNegativeButton(android.R.string.cancel, null)
             .show()
     }
 
     private fun showLaunchDialog() {
+        val game = GameLibraryRepository.selected(this)
+        if (game == null) {
+            toast(getString(R.string.no_game_selected))
+            showLibraryDialog()
+            return
+        }
+
         val settings = SettingsRepository.load(this)
         val firmware = FirmwareRepository.load(this)
         val driver = DriverRepository.load(this)
@@ -228,6 +277,7 @@ class MainActivity : AppCompatActivity() {
             .setMessage(
                 getString(
                     R.string.launch_message,
+                    game.title,
                     settings.renderer,
                     settings.resolutionScale,
                     settings.frameLimit,
@@ -244,13 +294,16 @@ class MainActivity : AppCompatActivity() {
                     return@setPositiveButton
                 }
                 enterGameMode(settings.autoLandscape)
+                GameLibraryRepository.markLaunched(this, game.gameUri)
+                refreshLibrary()
                 lastUpdateLine = NativeBridge.startCoreSafe(
                     firmwareInstalled = firmware.installed,
                     driverMode = driver.mode,
                     renderer = settings.renderer,
+                    gameTitle = game.title,
                 )
                 updateStatus(lastUpdateLine)
-                toast(lastUpdateLine)
+                toast(getString(R.string.game_launching, game.title))
             }
             .setNegativeButton(android.R.string.cancel, null)
             .show()
@@ -334,7 +387,7 @@ class MainActivity : AppCompatActivity() {
 
         MaterialAlertDialogBuilder(this)
             .setTitle(R.string.driver_title)
-            .setMessage(driver.summaryLine())
+            .setMessage(getString(R.string.driver_message, driver.summaryLine()))
             .setItems(actions) { _, which ->
                 when (which) {
                     0 -> {
@@ -395,6 +448,149 @@ class MainActivity : AppCompatActivity() {
             .show()
     }
 
+    private fun refreshLibrary() {
+        val selectedGame = GameLibraryRepository.selected(this)
+        val games = GameLibraryRepository.load(this)
+        val coverView = findViewById<ImageView>(R.id.gameCoverImage)
+        val titleView = findViewById<TextView>(R.id.selectedGameTitle)
+        val metaView = findViewById<TextView>(R.id.selectedGameMeta)
+        val emptyView = findViewById<TextView>(R.id.libraryEmptyText)
+        val container = findViewById<LinearLayout>(R.id.libraryContainer)
+        val startButton = findViewById<Button>(R.id.startButton)
+
+        container.removeAllViews()
+        startButton.isEnabled = selectedGame != null
+
+        if (selectedGame == null) {
+            titleView.text = getString(R.string.no_game_selected)
+            metaView.text = getString(R.string.library_empty)
+            applyGameArt(coverView, null)
+            emptyView.visibility = View.VISIBLE
+            return
+        }
+
+        titleView.text = selectedGame.title
+        metaView.text = listOf(selectedGame.summaryLine(), getString(R.string.tap_cover_hint)).joinToString("\n")
+        applyGameArt(coverView, selectedGame)
+        emptyView.visibility = if (games.isEmpty()) View.VISIBLE else View.GONE
+
+        games.forEach { game ->
+            container.addView(createGameCard(game, selectedGame.gameUri == game.gameUri))
+        }
+    }
+
+    private fun createGameCard(game: GameEntry, isSelected: Boolean): View {
+        val card = MaterialCardView(this).apply {
+            radius = 20f
+            strokeWidth = dp(1)
+            strokeColor = ContextCompat.getColor(this@MainActivity, R.color.helios3_primary_dark)
+            setCardBackgroundColor(ContextCompat.getColor(this@MainActivity, R.color.helios3_panel))
+            layoutParams = LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+            ).apply {
+                topMargin = dp(8)
+            }
+            setOnClickListener {
+                GameLibraryRepository.selectGame(this@MainActivity, game.gameUri)
+                refreshLibrary()
+                updateStatus(lastUpdateLine)
+            }
+        }
+
+        val content = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            setPadding(dp(12), dp(12), dp(12), dp(12))
+        }
+
+        val cover = ImageView(this).apply {
+            layoutParams = LinearLayout.LayoutParams(dp(72), dp(96))
+        }
+        applyGameArt(cover, game)
+
+        val body = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            layoutParams = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f).apply {
+                marginStart = dp(12)
+            }
+        }
+
+        val title = TextView(this).apply {
+            text = if (isSelected) "${game.title} • Active" else game.title
+            setTextColor(ContextCompat.getColor(this@MainActivity, R.color.helios3_text))
+            textSize = 16f
+            setTypeface(typeface, Typeface.BOLD)
+        }
+
+        val meta = TextView(this).apply {
+            text = game.summaryLine()
+            setTextColor(ContextCompat.getColor(this@MainActivity, R.color.helios3_text_muted))
+        }
+
+        val actions = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+        }
+
+        val playButton = Button(this).apply {
+            text = getString(R.string.play_now)
+            setOnClickListener {
+                GameLibraryRepository.selectGame(this@MainActivity, game.gameUri)
+                refreshLibrary()
+                showLaunchDialog()
+            }
+        }
+
+        val removeButton = Button(this).apply {
+            text = getString(R.string.remove_game)
+            setOnClickListener {
+                GameLibraryRepository.removeGame(this@MainActivity, game.gameUri)
+                lastUpdateLine = getString(R.string.game_removed, game.title)
+                refreshLibrary()
+                updateStatus(lastUpdateLine)
+                toast(lastUpdateLine)
+            }
+        }
+
+        actions.addView(playButton)
+        actions.addView(removeButton)
+        body.addView(title)
+        body.addView(meta)
+        body.addView(actions)
+        content.addView(cover)
+        content.addView(body)
+        card.addView(content)
+        return card
+    }
+
+    private fun chooseCoverForSelectedGame() {
+        val selectedGame = GameLibraryRepository.selected(this)
+        if (selectedGame == null) {
+            showLibraryDialog()
+            return
+        }
+
+        pendingCoverForGameUri = selectedGame.gameUri
+        coverPicker.launch(arrayOf("image/*"))
+    }
+
+    private fun applyGameArt(imageView: ImageView, game: GameEntry?) {
+        imageView.setBackgroundResource(R.drawable.game_cover_placeholder)
+
+        if (game?.coverUri != null) {
+            imageView.imageTintList = null
+            imageView.setPadding(0, 0, 0, 0)
+            imageView.scaleType = ImageView.ScaleType.CENTER_CROP
+            imageView.setImageURI(Uri.parse(game.coverUri))
+        } else {
+            imageView.setPadding(dp(18), dp(18), dp(18), dp(18))
+            imageView.scaleType = ImageView.ScaleType.CENTER_INSIDE
+            imageView.setImageResource(android.R.drawable.ic_menu_gallery)
+            imageView.imageTintList = ColorStateList.valueOf(
+                ContextCompat.getColor(this, R.color.helios3_text),
+            )
+        }
+    }
+
     private fun refreshUpdateState(showDialog: Boolean) {
         UpdateChecker.checkForUpdates(this) { state ->
             lastUpdateLine = state.message
@@ -421,8 +617,11 @@ class MainActivity : AppCompatActivity() {
         val settings = SettingsRepository.load(this)
         val firmware = FirmwareRepository.load(this)
         val driver = DriverRepository.load(this)
+        val selectedGame = GameLibraryRepository.selected(this)
+
         findViewById<TextView>(R.id.statusText).text = listOf(
             getString(R.string.status_ready),
+            getString(R.string.selected_game_status, selectedGame?.title ?: getString(R.string.no_game_selected_short)),
             NativeBridge.getCoreStatusSafe(),
             getString(
                 R.string.current_profile,
@@ -487,6 +686,14 @@ class MainActivity : AppCompatActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, true)
         WindowInsetsControllerCompat(window, window.decorView).show(WindowInsetsCompat.Type.systemBars())
     }
+
+    private fun persistReadPermission(uri: Uri) {
+        runCatching {
+            contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+    }
+
+    private fun dp(value: Int): Int = (value * resources.displayMetrics.density).toInt()
 
     private fun openUrl(url: String) {
         try {

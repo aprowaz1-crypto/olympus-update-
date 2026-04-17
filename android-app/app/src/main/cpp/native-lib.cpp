@@ -35,14 +35,21 @@ Java_com_helios3_launcher_NativeBridge_nativeGetBuildInfo(JNIEnv* env, jobject /
 }
 
 extern "C" JNIEXPORT jstring JNICALL
-Java_com_helios3_launcher_NativeBridge_nativeStartCore(JNIEnv* env, jobject /* this */, jboolean firmwareInstalled, jstring driverMode, jstring renderer) {
+Java_com_helios3_launcher_NativeBridge_nativeStartCore(
+    JNIEnv* env,
+    jobject /* this */,
+    jboolean firmwareInstalled,
+    jstring driverMode,
+    jstring renderer,
+    jstring gameTitle) {
     const char* driver_chars = driverMode ? env->GetStringUTFChars(driverMode, nullptr) : "System default";
     const char* renderer_chars = renderer ? env->GetStringUTFChars(renderer, nullptr) : "Vulkan";
+    const char* game_chars = gameTitle ? env->GetStringUTFChars(gameTitle, nullptr) : "Selected game";
 
     if (!firmwareInstalled) {
         g_core_status = "PS3 firmware is still required before the native core can boot.";
     } else {
-        g_core_status = std::string("RPCS3 Android bootstrap started • ") + renderer_chars + " • " + driver_chars;
+        g_core_status = std::string("Launching ") + game_chars + " • " + renderer_chars + " • " + driver_chars;
     }
 
     if (driverMode) {
@@ -50,6 +57,9 @@ Java_com_helios3_launcher_NativeBridge_nativeStartCore(JNIEnv* env, jobject /* t
     }
     if (renderer) {
         env->ReleaseStringUTFChars(renderer, renderer_chars);
+    }
+    if (gameTitle) {
+        env->ReleaseStringUTFChars(gameTitle, game_chars);
     }
 
     return env->NewStringUTF(g_core_status.c_str());

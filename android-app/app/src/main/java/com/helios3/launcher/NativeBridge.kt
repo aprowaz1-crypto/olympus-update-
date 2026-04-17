@@ -12,7 +12,12 @@ object NativeBridge {
 
     external fun nativeGetCoreStatus(): String
     external fun nativeGetBuildInfo(): String
-    external fun nativeStartCore(firmwareInstalled: Boolean, driverMode: String, renderer: String): String
+    external fun nativeStartCore(
+        firmwareInstalled: Boolean,
+        driverMode: String,
+        renderer: String,
+        gameTitle: String,
+    ): String
     external fun nativeSetSurface(surface: Surface?, width: Int, height: Int)
     external fun nativeClearSurface()
     external fun nativeOnGamepadState(axes: FloatArray, buttons: IntArray)
@@ -23,8 +28,13 @@ object NativeBridge {
     fun getBuildInfoSafe(): String = runCatching { nativeGetBuildInfo() }
         .getOrElse { "NDK bridge has not been built yet." }
 
-    fun startCoreSafe(firmwareInstalled: Boolean, driverMode: String, renderer: String): String {
-        return runCatching { nativeStartCore(firmwareInstalled, driverMode, renderer) }
+    fun startCoreSafe(
+        firmwareInstalled: Boolean,
+        driverMode: String,
+        renderer: String,
+        gameTitle: String,
+    ): String {
+        return runCatching { nativeStartCore(firmwareInstalled, driverMode, renderer, gameTitle) }
             .getOrElse { "Native core bootstrap is unavailable in this build." }
     }
 

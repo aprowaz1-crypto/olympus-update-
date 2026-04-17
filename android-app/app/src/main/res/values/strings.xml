@@ -1,12 +1,12 @@
 <resources>
     <string name="app_name">Helios3 RPCS3 Android</string>
-    <string name="subtitle">Fully native Android front end for the existing RPCS3 port path.</string>
-    <string name="status_ready">Native Android build ready.</string>
+    <string name="subtitle">Native Android launcher with game library, drivers, firmware setup, and direct boot flow.</string>
+    <string name="status_ready">Native Android build ready for library-driven RPCS3 boot tests.</string>
     <string name="open_settings">Settings hub</string>
     <string name="firmware_setup">Firmware</string>
-    <string name="import_source">Game library</string>
-    <string name="install_core">Core files</string>
-    <string name="start_session">Boot game</string>
+    <string name="import_source">Add game</string>
+    <string name="install_core">Core setup</string>
+    <string name="start_session">Launch selected game</string>
     <string name="launch_rpcs3">Graphics</string>
     <string name="gamepad_fix">Controls</string>
     <string name="check_updates">Updates</string>
@@ -18,7 +18,7 @@
 
 Version: %1$s
 
-The Android front end can track upstream releases and keep the native port aligned with new builds.</string>
+The Android launcher can follow upstream updates and keep the native port aligned with new builds.</string>
     <string name="update_now">Open release page</string>
     <string name="update_later">Later</string>
     <string name="view_release_checklist">Porting checklist</string>
@@ -27,7 +27,7 @@ The Android front end can track upstream releases and keep the native port align
     <string name="graphics_settings">Graphics</string>
     <string name="audio_settings">Audio</string>
     <string name="system_settings">CPU and system</string>
-    <string name="driver_settings">Driver manager</string>
+    <string name="driver_settings">Drivers</string>
     <string name="input_settings">Input</string>
     <string name="apply_recommended">Recommended defaults</string>
     <string name="settings_saved">Settings saved.</string>
@@ -43,25 +43,30 @@ Current state:
     <string name="firmware_cleared">Firmware status cleared.</string>
     <string name="firmware_missing_launch">Install the PS3 firmware first.</string>
     <string name="library_title">Game library</string>
-    <string name="library_message">This native Android front end is prepared for direct game discovery and library management once the full RPCS3 core is linked into the NDK build.</string>
-    <string name="install_title">Native core setup</string>
-    <string name="install_message">This project now targets a real Android-native build path for RPCS3. The launcher already compiles a native bootstrap layer directly into the app.</string>
-    <string name="launch_title">Boot native core</string>
-    <string name="launch_message">Renderer: %1$s
-Resolution scale: %2$s
-Frame limit: %3$s
-Driver profile: %4$s
-PPU compiler: %5$s
-SPU compiler: %6$s
-Auto landscape: %7$s
+    <string name="library_message">Add ISO, PKG, or image-based test files to the launcher library. Tap the game cover to assign custom box art.</string>
+    <string name="install_title">Core setup</string>
+    <string name="install_message">The launcher is now focused on native Android flow: firmware, drivers, game library, and direct boot actions are wired in. The remaining work is deeper RPCS3 core integration.</string>
+    <string name="launch_title">Launch selected game</string>
+    <string name="launch_message">Game: %1$s
+Renderer: %2$s
+Resolution scale: %3$s
+Frame limit: %4$s
+Driver profile: %5$s
+PPU compiler: %6$s
+SPU compiler: %7$s
+Auto landscape: %8$s
 
-This will boot the compiled native RPCS3 bootstrap path on Android.</string>
-    <string name="start_native_preview">Boot native core</string>
+This will send the selected game to the native RPCS3 bootstrap path.</string>
+    <string name="start_native_preview">Launch now</string>
     <string name="native_launch_ready">Native core bootstrap started.</string>
     <string name="graphics_title">Graphics settings</string>
     <string name="audio_title">Audio settings</string>
     <string name="system_title">CPU and system settings</string>
-    <string name="driver_title">Custom driver manager</string>
+    <string name="driver_title">Driver manager</string>
+    <string name="driver_message">You can install a custom driver package or switch to compatibility presets.
+
+Current state:
+%1$s</string>
     <string name="input_title">Input and updates</string>
     <string name="action_cycle_renderer">Cycle renderer backend</string>
     <string name="action_cycle_resolution">Cycle resolution scale</string>
@@ -78,8 +83,8 @@ This will boot the compiled native RPCS3 bootstrap path on Android.</string>
     <string name="action_toggle_overlay">Toggle on-screen overlay</string>
     <string name="action_toggle_haptics">Toggle gamepad haptics</string>
     <string name="action_toggle_auto_updates">Toggle automatic update checks</string>
-    <string name="import_driver">Import custom driver package</string>
-    <string name="clear_driver">Clear custom driver</string>
+    <string name="import_driver">Install driver package</string>
+    <string name="clear_driver">Reset driver</string>
     <string name="open_driver_help">Open driver help page</string>
     <string name="driver_custom_label">custom driver</string>
     <string name="driver_loaded">Driver loaded: %1$s</string>
@@ -104,11 +109,23 @@ Current settings:
     <string name="enabled_short">On</string>
     <string name="disabled_short">Off</string>
     <string name="section_boot">Ready to boot</string>
-    <string name="section_preview">Game preview</string>
     <string name="section_setup">Setup</string>
     <string name="section_performance">Performance and control</string>
     <string name="section_tools">Tools</string>
-    <string name="section_overview">Overview</string>
-    <string name="section_emulator">Emulator controls</string>
-    <string name="section_library">Library and updates</string>
+    <string name="section_library_live">Game library</string>
+    <string name="generic_game_title">PS3 Game</string>
+    <string name="no_game_selected">No game selected</string>
+    <string name="no_game_selected_short">None</string>
+    <string name="library_empty">Add your first game to see cover art and quick launch actions here.</string>
+    <string name="game_added">Game added: %1$s</string>
+    <string name="game_removed">Game removed: %1$s</string>
+    <string name="cover_updated">Game cover updated.</string>
+    <string name="tap_cover_hint">Tap the cover art to set a custom image.</string>
+    <string name="game_launching">Launch requested for %1$s.</string>
+    <string name="selected_game_status">Selected game: %1$s</string>
+    <string name="set_cover_art">Set cover art</string>
+    <string name="clear_library">Clear library</string>
+    <string name="play_now">Play now</string>
+    <string name="remove_game">Remove</string>
+    <string name="library_count">Games in library: %1$d</string>
 </resources>
