@@ -76,6 +76,12 @@ apt update && apt full-upgrade -y
 
 After that, fully close and reopen Termux, then rerun the installer.
 
+## GitHub Actions build
+
+The repository now includes an Android build workflow in [.github/workflows/android-build.yml](.github/workflows/android-build.yml).
+
+On each relevant push, pull request, or manual run, it builds the Android APKs and uploads them as workflow artifacts.
+
 ## Android port direction
 
 A real Android port starter is now included in [android-app/README.md](android-app/README.md).
