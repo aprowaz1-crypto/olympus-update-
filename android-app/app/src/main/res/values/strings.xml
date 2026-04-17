@@ -2,14 +2,14 @@
     <string name="app_name">Helios3 RPCS3 Android</string>
     <string name="subtitle">Fully native Android front end for the existing RPCS3 port path.</string>
     <string name="status_ready">Native Android build ready.</string>
-    <string name="open_settings">Open native settings</string>
-    <string name="firmware_setup">PS3 firmware setup</string>
+    <string name="open_settings">Settings hub</string>
+    <string name="firmware_setup">Firmware</string>
     <string name="import_source">Game library</string>
-    <string name="install_core">Native core setup</string>
-    <string name="start_session">Launch preview</string>
-    <string name="launch_rpcs3">Graphics settings</string>
-    <string name="gamepad_fix">Input settings</string>
-    <string name="check_updates">Check RPCS3 updates</string>
+    <string name="install_core">Core files</string>
+    <string name="start_session">Boot game</string>
+    <string name="launch_rpcs3">Graphics</string>
+    <string name="gamepad_fix">Controls</string>
+    <string name="check_updates">Updates</string>
     <string name="doctor">Diagnostics</string>
     <string name="open_repo">Project page</string>
     <string name="checking_updates">Checking for RPCS3 updates...</string>
@@ -99,9 +99,15 @@ Driver:
 
 Current settings:
 %5$s</string>
-    <string name="current_profile">Current profile: %1$s • %2$s • %3$s</string>
+    <string name="current_profile">Profile: %1$s • %2$s • %3$s</string>
+    <string name="compiler_profile">Compilers: %1$s • %2$s</string>
     <string name="enabled_short">On</string>
     <string name="disabled_short">Off</string>
+    <string name="section_boot">Ready to boot</string>
+    <string name="section_preview">Game preview</string>
+    <string name="section_setup">Setup</string>
+    <string name="section_performance">Performance and control</string>
+    <string name="section_tools">Tools</string>
     <string name="section_overview">Overview</string>
     <string name="section_emulator">Emulator controls</string>
     <string name="section_library">Library and updates</string>

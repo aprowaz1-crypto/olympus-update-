@@ -424,15 +424,19 @@ class MainActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.statusText).text = listOf(
             getString(R.string.status_ready),
             NativeBridge.getCoreStatusSafe(),
-            NativeBridge.getBuildInfoSafe(),
-            firmware.summaryLine(),
-            driver.summaryLine(),
             getString(
                 R.string.current_profile,
                 settings.renderer,
                 settings.resolutionScale,
                 settings.frameLimit,
             ),
+            getString(
+                R.string.compiler_profile,
+                settings.ppuDecoder,
+                settings.spuDecoder,
+            ),
+            firmware.summaryLine(),
+            driver.summaryLine(),
             updateLine,
         ).joinToString("\n")
     }
