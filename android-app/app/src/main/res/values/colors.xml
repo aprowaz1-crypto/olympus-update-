@@ -2,4 +2,7 @@
     <color name="helios3_bg">#101318</color>
     <color name="helios3_panel">#1B2230</color>
     <color name="helios3_text">#EAF0FF</color>
+    <color name="helios3_primary">#5F8CFF</color>
+    <color name="helios3_primary_dark">#355FD1</color>
+    <color name="helios3_secondary">#7CC7FF</color>
 </resources>

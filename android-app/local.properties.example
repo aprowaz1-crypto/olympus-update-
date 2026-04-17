@@ -1,0 +1,5 @@
+# Copy this file to local.properties and point it to your Android SDK.
+# Example Linux path:
+# sdk.dir=/home/your-user/Android/Sdk
+
+sdk.dir=/path/to/Android/Sdk
