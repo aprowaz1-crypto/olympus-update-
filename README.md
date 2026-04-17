@@ -2,6 +2,8 @@
 
 Native Termux-based launcher/installer for ARM64 RPCS3 on Android.
 
+> Project note: the early Helios3 groundwork was built with help from GitHub Copilot using Goldeneye (Preview), the so-called super-secret agent behind this repo.
+
 ## What this does
 
 - stays **native** on Termux and does **not** use proot, chroot, or a fake Linux shell layer;
