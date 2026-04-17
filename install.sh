@@ -12,6 +12,11 @@ if [ "$(uname -m)" != "aarch64" ]; then
 fi
 
 install_termux_packages() {
+  if [ "${OLYMPUS_SKIP_PKG:-0}" = "1" ]; then
+    warn "Skipping pkg dependency installation because OLYMPUS_SKIP_PKG=1"
+    return 0
+  fi
+
   if ! command -v pkg >/dev/null 2>&1; then
     warn "pkg not found; skipping package installation"
     return 0
@@ -26,9 +31,36 @@ install_termux_packages() {
   )
 
   log "Installing native Termux dependencies"
-  pkg update -y
-  pkg install -y x11-repo tur-repo
-  pkg install -y "${required_packages[@]}"
+  if ! pkg update -y; then
+    cat >&2 <<'EOF'
+[x] Termux package manager is currently broken or has no mirror selected.
+
+Fix it first with:
+  termux-change-repo
+  apt update && apt full-upgrade -y
+
+Then restart Termux and run:
+  bash install.sh
+
+If you already fixed the dependencies manually and only want to continue this installer:
+  OLYMPUS_SKIP_PKG=1 bash install.sh
+EOF
+    exit 1
+  fi
+
+  if ! pkg install -y x11-repo tur-repo; then
+    warn "Could not enable one of the Termux repositories automatically"
+  fi
+
+  if ! pkg install -y "${required_packages[@]}"; then
+    cat >&2 <<'EOF'
+[x] Required Termux packages could not be installed.
+Make sure the mirror is set correctly, then run:
+  apt update && apt full-upgrade -y
+  pkg install -y curl wget unzip p7zip tar which patchelf pulseaudio
+EOF
+    exit 1
+  fi
 
   for package in "${optional_packages[@]}"; do
     pkg install -y "$package" >/dev/null 2>&1 || warn "Optional package unavailable: $package"
