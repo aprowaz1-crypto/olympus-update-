@@ -73,6 +73,12 @@ apt update && apt full-upgrade -y
 
 After that, fully close and reopen Termux, then rerun the installer.
 
+## Android app wrapper
+
+A native Android launcher UI is now included in [android-app/README.md](android-app/README.md).
+
+It does not move emulation into Java or a fake Linux layer. Instead, it gives you a proper app front end while keeping the heavy work on the native ARM64 Termux side.
+
 ## Notes
 
 - Target platform: **Android + Termux + ARM64**.

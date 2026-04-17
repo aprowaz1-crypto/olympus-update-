@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Olympus Launcher</string>
+    <string name="subtitle">Native Android front end for the Olympus Termux RPCS3 stack.</string>
+    <string name="status_ready">This app sends launch commands to Termux. Install Termux and the Olympus core first.</string>
+    <string name="install_core">Install or update core</string>
+    <string name="start_session">Start Termux:X11 session</string>
+    <string name="launch_rpcs3">Launch RPCS3</string>
+    <string name="gamepad_fix">Apply gamepad profile</string>
+    <string name="doctor">Run diagnostics</string>
+    <string name="open_repo">Open project page</string>
+    <string name="termux_fallback_toast">Termux service was not found. The command was copied to the clipboard.</string>
+    <string name="termux_missing">Termux is not installed.</string>
+    <string name="browser_missing">No browser is available.</string>
+    <string name="command_sent">Sent to Termux: %1$s</string>
+</resources>
