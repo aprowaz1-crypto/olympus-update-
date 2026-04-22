@@ -21,6 +21,29 @@ bash install.sh
 
 Then open [android-app/README.md](android-app/README.md) and build the APK.
 
+## Termux (ARM64) launch
+
+If you want to run the ARM64 RPCS3 build from Termux:
+
+```bash
+git clone https://github.com/aprowaz1-crypto/olympus-update-.git
+cd olympus-update-
+bash scripts/termux-rpcs3-arm64.sh
+```
+
+What this launcher does automatically:
+
+- checks that the device is ARM64;
+- installs RPCS3 assets via `install.sh` when they are missing;
+- applies safe defaults for Zink and SDL gamepad settings;
+- starts the RPCS3 binary or AppImage.
+
+Optional example with arguments:
+
+```bash
+bash scripts/termux-rpcs3-arm64.sh --version
+```
+
 ## GitHub Actions build
 
 The repository includes an Android workflow in [.github/workflows/android-build.yml](.github/workflows/android-build.yml).
